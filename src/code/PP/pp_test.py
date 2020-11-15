@@ -1,23 +1,19 @@
-import RSC_Wrapper as RSCW
+import preproc as pp
 
 
 if __name__ == "__main__":
     # create a PreProc object
-    obj = RSCW.RSC()
+    obj = pp.PreProc()
 
     # a simple testing loop that will take a picture everytime enter is pressed
     # when any character is entered, the program will terminate
     while(True):
-        # capture a new image
-        obj.capture()
-
-        # update the plot
+        obj.capture('a')
+        obj.preproccess()
         obj.display()
-
-        # get the user inpuot to see if we will continue looping
+        obj.save("a")
         x = input("?")
-        if (x != ''):
+        if x != '':
             break
 
-    # close the camera pipeline
-    obj.stop_camera()
+    obj.shutdown()
