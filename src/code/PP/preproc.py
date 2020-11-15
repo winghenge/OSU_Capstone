@@ -1,5 +1,5 @@
 import numpy as np
-# import RSC_Wrapper as RSCW
+import RSC_Wrapper as RSCW
 
 
 class PreProc:
@@ -28,12 +28,12 @@ class PreProc:
         # as such, the closest pixel should be near zero, and the furthest
         # near one.
         # Second, we raise this value to the fourth power, this is to help
-        #  make minor differences
+        # make minor differences
         # between pixels more distinct.
         # For example: the sign 'A' versus the sign 'S'
         # 'A' has the thumb closer to the camera than in 'S', but the
         # difference is thousanths of units. Thus, by raising to the fourth
-        #  power, we can increase that difference
+        # power, we can increase that difference
         new_img = (image / maxVal) ** 4
 
         # Any small value (arbitrarily defined as smaller than 0.001,
@@ -44,3 +44,16 @@ class PreProc:
         new_img[new_img < 0.001] = 1
 
         return new_img
+
+    def gaussian_blur(self, image):
+        # preform a gaussian blur on the image to reduce noise
+        print("HELLO")
+
+    def mutate(self, image):
+        # mutate the testing image to create a larger trainging set
+        print("HELLO")
+
+    def save_as_pickle(self, image, gest):
+        # save the numpy image array as a pickle object in the training
+        # database
+        print("HELLO")

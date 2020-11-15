@@ -18,3 +18,6 @@ if __name__ == "__main__":
         x = input("?")
         if (x != ''):
             break
+
+    # close the camera pipeline
+    obj.stop_camera()

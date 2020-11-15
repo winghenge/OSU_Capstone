@@ -18,7 +18,7 @@ class RSC:
         # Configure the camera, and connect
         self.config = rs.config()
         self.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
-        # self.profile = self.pipeline.start(config)
+        self.profile = self.pipeline.start(self.config)
 
         # Create an align object
         # rs.align allows us to perform alignment of depth
@@ -67,9 +67,6 @@ class RSC:
         return new_img
 
     def capture(self):
-        # activate the camera
-        self.pipeline.start(self.config)
-
         # capture a depth image
         # Get frameset of color and depth
         frames = self.pipeline.wait_for_frames()
@@ -88,9 +85,6 @@ class RSC:
         # remove the background and save the image to the class
         self.depth_image = self.fix_scale(img)
 
-        # deactivate the camera
-        self.pipeline.stop()
-
     def display(self):
         # update the plot/image
         plt.imshow(self.depth_image, "gray_r")
@@ -100,3 +94,7 @@ class RSC:
         # thus, having the program preform a slight pause will ensure the
         # plot is updated
         plt.pause(0.001)
+
+    def stop_camera(self):
+        # stop the camera pipeline
+        self.pipeline.stop()
