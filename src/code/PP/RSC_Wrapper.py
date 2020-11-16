@@ -7,25 +7,33 @@ import numpy as np
 plt.ion()
 
 
+# this needs to be a singleton class
 class RSC:
-    def __init__(self):
-        # initilizer
+    __instance = None
 
-        # Create the realsense pipeline object.
-        # This pipeline is the interface with the camera
-        self.pipeline = rs.pipeline()
+    def __new__(cls):
+        if cls.__instance is None:
+            # initilizer
+            # Create the realsense pipeline object.
+            # This pipeline is the interface with the camera
+            cls.pipeline = rs.pipeline()
 
-        # Configure the camera, and connect
-        self.config = rs.config()
-        self.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+            # Configure the camera, and connect
+            cls.config = rs.config()
+            cls.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
 
-        # Create an align object
-        # rs.align allows us to perform alignment of depth
-        #  frames to others frames
-        # The "align_to" is the stream type to which we plan
-        #  to align depth frames.
-        align_to = rs.stream.color
-        self.align = rs.align(align_to)
+            # Create an align object
+            # rs.align allows us to perform alignment of depth
+            #  frames to others frames
+            # The "align_to" is the stream type to which we plan
+            #  to align depth frames.
+            align_to = rs.stream.color
+            cls.align = rs.align(align_to)
+            cls.profile = cls.pipeline.start(cls.config)
+
+            cls.__instance = super(RSC, cls).__new__(cls)
+
+        return cls.__instance
 
     def capture(self):
         # capture a depth image

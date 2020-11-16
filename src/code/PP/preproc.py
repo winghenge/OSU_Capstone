@@ -13,7 +13,7 @@ plt.ion()
 
 class PreProc:
     def __init__(self, blur=False, mutate=False, scale=True, rmbkg=True,
-                 resize=False):
+                 resize=False, save=True):
         # This preproccessor class is intended to be used for training
         # The basic functionality of this class includes: capturing images,
         # image pre-proccessing, mutating images, and saving as a pickle
@@ -32,7 +32,7 @@ class PreProc:
 
         # now, we need to create a camera modual (RSC_Wrapper)
         self.rsc = RSCW.RSC()
-        self.rsc.start_camera()
+        #self.rsc.start_camera()
 
         # alright, have an array of saved images stored before writting to disk
         self.stored_images = []
@@ -44,6 +44,7 @@ class PreProc:
         self.f_scale = scale
         self.f_rm_background = rmbkg
         self.f_resize = resize
+        self.f_save = save
 
     def shutdown(self):
         # safely terminate this object by saving values to disk and
@@ -52,9 +53,10 @@ class PreProc:
         # stop the camera
         self.rsc.stop_camera()
 
-        # update the ledger
-        with open("../datasets/ds_ledger", "wb") as fd:
-            pickle.dump(self.ledger, fd)
+        if self.f_save:
+            # update the ledger
+            with open("../datasets/ds_ledger", "wb") as fd:
+                pickle.dump(self.ledger, fd)
 
     def display(self):
         # update the plot/image
@@ -76,6 +78,12 @@ class PreProc:
         self.image = self.rsc.capture()
 
     def save(self, gesture):
+        # if the save flag isnt set, DONT SAVE
+        # this is mostly a testing/debugging thing so we dont have 
+        # data from testing this class saved
+        if self.f_save:
+            return
+        
         # save the numpy image array as a pickle object in the training
         # database
 
