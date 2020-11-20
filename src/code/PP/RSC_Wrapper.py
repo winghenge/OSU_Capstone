@@ -2,15 +2,15 @@ import matplotlib.pyplot as plt
 import pyrealsense2 as rs
 import numpy as np
 
-# make the matplotlib plots interactive, this allows them to
-# be updated
-plt.ion()
-
 
 # this needs to be a singleton class
 class RSC:
     __instance = None
 
+    # using the __new__ magic method, along with the __instance flag
+    # to ensure that only a single instance of this class is created,
+    # and any subsequent calls to create a new isntance (RSC()) will return the
+    # first instance. AKA, singleton
     def __new__(cls):
         if cls.__instance is None:
             # initilizer
@@ -20,7 +20,8 @@ class RSC:
 
             # Configure the camera, and connect
             cls.config = rs.config()
-            cls.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+            cls.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16,
+                                     30)
 
             # Create an align object
             # rs.align allows us to perform alignment of depth

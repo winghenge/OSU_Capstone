@@ -5,6 +5,8 @@ from collections import defaultdict
 from scipy import ndimage
 import RSC_Wrapper as RSCW
 import matplotlib.pyplot as plt
+import cv2
+#from skimage import measure
 
 # make the matplotlib plots interactive, this allows them to
 # be updated
@@ -53,10 +55,14 @@ class PreProc:
         # stop the camera
         self.rsc.stop_camera()
 
+        cv2.destroyAllWindows()
+
         if self.f_save:
             # update the ledger
             with open("../datasets/ds_ledger", "wb") as fd:
                 pickle.dump(self.ledger, fd)
+
+    def calc_contour(self):
 
     def display(self):
         # update the plot/image
@@ -67,6 +73,11 @@ class PreProc:
         # thus, having the program preform a slight pause will ensure the
         # plot is updated
         plt.pause(0.001)
+
+    def cv2_disp(self):
+        cv2.imshow('Depth Image', self.image)
+        cv2.waitKey(1) # waits until a key is pressed
+        #time.sleep(0.0001
 
     def capture(self, gesture):
         # clear the saved image array, if they werent saved,
@@ -79,7 +90,7 @@ class PreProc:
 
     def save(self, gesture):
         # if the save flag isnt set, DONT SAVE
-        # this is mostly a testing/debugging thing so we dont have 
+        # this is mostly a testing/debugging thing so we dont have
         # data from testing this class saved
         if self.f_save:
             return
