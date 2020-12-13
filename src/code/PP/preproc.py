@@ -61,9 +61,6 @@ class PreProc:
             # update the ledger
             with open("../datasets/ds_ledger", "wb") as fd:
                 pickle.dump(self.ledger, fd)
-
-    def calc_contour(self):
-
     def display(self):
         # update the plot/image
         plt.imshow(self.image, "gray_r")
@@ -78,6 +75,9 @@ class PreProc:
         cv2.imshow('Depth Image', self.image)
         cv2.waitKey(1) # waits until a key is pressed
         #time.sleep(0.0001
+
+    def show_raw(self):
+        print(self.image)
 
     def capture(self, gesture):
         # clear the saved image array, if they werent saved,

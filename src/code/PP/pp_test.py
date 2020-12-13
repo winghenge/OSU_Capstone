@@ -3,7 +3,7 @@ import preproc as pp
 
 if __name__ == "__main__":
     # create a PreProc object
-    obj = pp.PreProc(save=False)
+    obj = pp.PreProc(save=False )
 
     # a simple testing loop that will take a picture everytime enter is pressed
     # when any character is entered, the program will terminate
@@ -11,7 +11,7 @@ if __name__ == "__main__":
         obj.capture('a')
         obj.preproccess()
         obj.cv2_disp()
-        obj.calc_contour()
         #break
 
+    
     obj.shutdown()
