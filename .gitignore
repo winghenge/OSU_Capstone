@@ -10,9 +10,9 @@ src/code/UI/*.dylib
 
 src/code/UI/*.so
 
-src/code/PP/*.dylib
+src/code/TKS/*.dylib
 
-src/code/PP/*.so
+src/code/TKS/*.so
 
 .DS_store
 
