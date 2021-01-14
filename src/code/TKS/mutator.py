@@ -2,7 +2,7 @@ import numpy as np
 import random
 
 
-def mutate(self, operations, x, y):
+def mutate(operations, x, y):
     if "shift" in operations:
         # the array to hold the new mutations
         mutations = []
@@ -61,7 +61,7 @@ def mutate(self, operations, x, y):
                 mutations.append(image)
 
         # add the muations to the origonal
-        x, y = np.concatenate(x, mutations), np.concatenate(y, y)
+        x, y = np.concatenate((x, mutations)), np.concatenate((y, y))
     
     # return the new dataset
     return x, y

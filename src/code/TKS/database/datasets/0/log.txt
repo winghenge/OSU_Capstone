@@ -1,0 +1,37 @@
+Log for dataset #0
+
+Elements in dataset: 472
+Mutations preformed on dataset:
+none
+
+Gesture "a" has 50 RAW images.
+Gesture "b" has 60 RAW images.
+Gesture "c" has 50 RAW images.
+Gesture "d" has 51 RAW images.
+Gesture "e" has 50 RAW images.
+Gesture "f" has 53 RAW images.
+Gesture "g" has 51 RAW images.
+Gesture "h" has 10 RAW images.
+Gesture "i" has 10 RAW images.
+Gesture "j" has 10 RAW images.
+Gesture "k" has 10 RAW images.
+Gesture "l" has 10 RAW images.
+Gesture "m" has 10 RAW images.
+Gesture "n" has 10 RAW images.
+Gesture "o" has 10 RAW images.
+Gesture "p" has 11 RAW images.
+Gesture "q" has 10 RAW images.
+Gesture "r" has 10 RAW images.
+Gesture "s" has 10 RAW images.
+Gesture "t" has 10 RAW images.
+Gesture "u" has 10 RAW images.
+Gesture "v" has 10 RAW images.
+Gesture "w" has 10 RAW images.
+Gesture "x" has 10 RAW images.
+Gesture "y" has 10 RAW images.
+Gesture "z" has 10 RAW images.
+
+Science Cat!
+ /\_/\
+( o.o )
+ > ^ <

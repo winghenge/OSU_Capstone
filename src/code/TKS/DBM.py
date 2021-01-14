@@ -96,61 +96,92 @@ class DB_man:
         cv2.imshow("Data", data)
         cv2.waitKey(0)
 
-    def load(self, gesture='all', key=True, key_type='int', split=True,
-             cutoff_pcnt=.9):
-        # check to see if we are going to compile all of the letters, or a
-        # specific one
-        if gesture == 'all':
-            # compile all
-            # arrays to hold the results
-            x_train = []
-            y_train = []
-            x_test = []
-            y_test = []
+    def export(self, mutations=["none"], shuffel=True, validation=0.85):
+        # export all RAW
+        # arrays to hold the results
+        x = []
+        y = []
 
-            # load each datapoint
-            for gest in string.ascii_lowercase:
-                cutoff = int(cutoff_pcnt*self.gest_ledger[gest])
-                for indx in range(self.gest_ledger[gest]):
-                    with open(MAIN_PATH+str(gest)+"/"+str(indx), "rb") as fd:
-                        if cutoff > 0:
-                            x_train.append(pickle.load(fd))
-                            y_train.append(gest)
-                            cutoff -= 1
-                        else:
-                            x_test.append(pickle.load(fd))
-                            y_test.append(gest)
+        # load each datapoint
+        for gest in self.gest_ledger:
+            for indx in range(self.gest_ledger[gest]):
+                with open(MAIN_PATH+"raw/"+str(gest)+"/"+str(indx), "rb") as fd:
+                    x.append(pickle.load(fd))
+                    y.append(self.class_ledger[gest])
 
-        elif gesture in string.ascii_lowercase: 
-            #valid letter
-            # arrays to hold the results
-            data = []
-            y_train = [gesture for _ in range(self.gest_ledger[gesture])]
+        x, y = np.array(x), np.array(y)
 
-            # load each datapoint
-            for indx in range(self.gest_ledger[gesture]):
-                with open(MAIN_PATH+gesture+"/"+str(indx), "rb") as fd:
-                    data.append(pickle.load(fd))
+        # if we want to mutate, this is where we would do it
+        if "none" not in mutations:
+            # do the mutation!
+            x, y = mutate(mutations, x, y)
 
+        # Shuffle the dataset
+        x, y = shuffle_in_unison(x, y)
+
+        # Setup the validation sets
+        cutoff = int(len(x)*validation)
+        xv = np.array(x[cutoff:])
+        x = x[:cutoff]
+
+        yv = np.array(y[cutoff:])
+        y = y[:cutoff]        
+
+        # make the dataset directory
+        mkdir(MAIN_PATH+"datasets/"+str(self.ds_ledger))
+
+        # Save the dataset
+        with open(MAIN_PATH+"datasets/"+str(self.ds_ledger)+"/dataset",
+             "wb") as fd:
+            pickle.dump(((x, y), (xv, yv)), fd)
+
+        # Save the DS Log
+        with open(MAIN_PATH+"datasets/"+str(self.ds_ledger)+"/log.txt",
+             "w") as fd:
+            fd.writelines("Log for dataset #" + str(self.ds_ledger)+"\n\n")
+            fd.writelines("Elements in dataset: " + str(len(x))+"\n")
+            fd.writelines("Mutations preformed on dataset:"+"\n")
+            for word in mutations:
+                fd.writelines(str(word)+"\n\n")
+            
+            for gesture in dbm.class_ledger:
+                fd.writelines("Gesture \"" + str(gesture) + "\" has "
+                              + str(dbm.gest_ledger[gesture]) +
+                              " RAW images.\n")
+
+            fd.writelines("\nScience Cat!\n")
+            fd.writelines(" /\\_/\\\n( o.o )\n > ^ <")
+
+        # incriment the ds_ledger count
+        self.ds_ledger += 1
+
+        # Save the incrimented ledger
+        with open(MAIN_PATH+"ledgers/ds_ledger", "wb") as fd:
+            pickle.dump(self.ds_ledger, fd)
+
+    def load(self, dataset=-1):
+        # check to see if the dataset is -1: aka load latest
+        if dataset == -1:
+            #load the latest dataset
+            path = MAIN_PATH+"datasets/"+str(self.ds_ledger-1)+"/dataset"
+
+        # check to see if the passed dataset index is within the bounds of all
+        # exported datasets
+        elif dataset < self.ds_ledger:
+            # load the specified dataset
+            path = MAIN_PATH+"datasets/"+str(dataset)+"/dataset"
+        
+        # otherwise, throw a fit because the passed ds isnt valid
         else:
-            # not a valid gesture
-            print("Gesture '" + str(gesture) + " is not in the dataset.")
-            return None
+            print("PASSED DATASET INDX OUT OF BOUNDS!")
+            return [], []
 
-        # Return Block
-        if key:
-            if key_type == 'ascii':
-                return x_train, y_train, x_test, y_test
-            else:
-                for indx in range(len(y_train)):
-                    y_train[indx] = ord(y_train[indx])-ord('a')
-                    
-                for indx in range(len(y_test)):
-                    y_test[indx] = ord(y_test[indx])-ord('a')
+        # load the dataset
+        print(path)
+        with open(path, "rb") as fd:
+            ((x, y), (xv, yv)) = pickle.load(fd)
 
-                return np.array(x_train), np.array(y_train), np.array(x_test), np.array(y_test)
-        else:
-            return data
+        return x, y, xv, yv
 
     def query_ledger(self, key, type="gesture"):
         if type == "gesture":
@@ -159,6 +190,35 @@ class DB_man:
         elif type == "data set":
             return self.ds_ledger[key]
 
+    def load_RAW(self, validation=0.9):
+        # export all RAW
+        # arrays to hold the results
+        x = []
+        y = []
+
+        # load each datapoint
+        for gest in self.gest_ledger:
+            for indx in range(self.gest_ledger[gest]):
+                with open(MAIN_PATH+"raw/"+str(gest)+"/"+str(indx), "rb") as fd:
+                    x.append(pickle.load(fd))
+                    y.append(self.class_ledger[gest])
+
+        x, y = np.array(x), np.array(y)
+
+        # Setup the validation sets
+        #cutoff = int(len(x)*validation)
+        #xv = np.array(x[cutoff:])
+        #x = x[:cutoff]
+
+        #yv = np.array(y[cutoff:])
+        #y = y[:cutoff]
+
+        # Shuffle the dataset
+        x, y = shuffle_in_unison(x, y)
+        #xv, yv = shuffle_in_unison(xv, yv)
+
+        #return x, y, xv, yv
+        return x, y, x, y
 
 # now lets include some functionality allowing this file to be called by itself
 # to provide some control over the database, making this into a true DBM system
@@ -223,6 +283,14 @@ if __name__ == "__main__":
 
             else:
                 print("That gesture is not unique. No action taken.")
+
+        elif x.lower() == "export":
+            # Export RAW as a dataset with no mutations
+            dbm.export()
+
+        elif x.lower() == "mutate":
+            # Export RAW as a dataset with no mutations
+            dbm.export(["shift"])
 
         elif x.lower() == "exit":
             break
